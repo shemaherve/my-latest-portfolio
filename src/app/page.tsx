@@ -41,8 +41,8 @@ function Header() {
   return (
     <header className="site-header-new">
       <div className="header-left">
-        <motion.a 
-          href="/" 
+        <motion.a
+          href="/"
           className="logo"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -76,7 +76,7 @@ function Header() {
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
       >
         <div className="hamburger-lines">
-          <motion.span 
+          <motion.span
             className="line line-1"
             animate={{
               rotate: menuOpen ? 45 : 0,
@@ -85,7 +85,7 @@ function Header() {
             }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           />
-          <motion.span 
+          <motion.span
             className="line line-2"
             animate={{
               opacity: menuOpen ? 0 : 1,
@@ -93,7 +93,7 @@ function Header() {
             }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           />
-          <motion.span 
+          <motion.span
             className="line line-3"
             animate={{
               rotate: menuOpen ? -45 : 0,
@@ -103,7 +103,7 @@ function Header() {
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           />
         </div>
-        <motion.div 
+        <motion.div
           className="hamburger-glow"
           animate={{
             opacity: isHovering ? 1 : 0,
@@ -130,22 +130,22 @@ function Header() {
                   initial={{ opacity: 0, x: 60 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 40 }}
-                  transition={{ 
-                    duration: 0.4, 
+                  transition={{
+                    duration: 0.4,
                     delay: index * 0.1,
                     ease: [0.4, 0, 0.2, 1]
                   }}
                   onMouseEnter={() => setHoveredItem(item.id)}
                   onMouseLeave={() => setHoveredItem(null)}
                 >
-                  <a 
-                    href={`#${item.id}`} 
+                  <a
+                    href={`#${item.id}`}
                     onClick={() => setMenuOpen(false)}
                     className={hoveredItem === item.id ? "active" : ""}
                   >
                     <span className="menu-number">{item.number}</span>
                     <span className="menu-label">{item.label}</span>
-                    <motion.div 
+                    <motion.div
                       className="menu-arrow"
                       animate={{
                         x: hoveredItem === item.id ? 0 : -20,
@@ -159,7 +159,7 @@ function Header() {
                 </motion.li>
               ))}
             </ul>
-            <motion.div 
+            <motion.div
               className="menu-footer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -380,9 +380,9 @@ function CursorExperience() {
 
         <div className="hero-grid">
           {/* Left Text - Decreased size and pulled right */}
-          <motion.div 
+          <motion.div
             className="hero-left-text pulled-right"
-            style={{ 
+            style={{
               x: smoothLeftNameX,
               y: smoothLeftNameY,
             }}
@@ -392,14 +392,14 @@ function CursorExperience() {
             <AnimatedName name="Herve" className="hero-last-name" style={{ opacity: smoothLeftNameOpacity }} />
           </motion.div>
 
-          <motion.div 
-            className="hero-center-canvas" 
-            style={{ 
-              y: smoothHeroY, 
-              x: smoothHeroX, 
+          <motion.div
+            className="hero-center-canvas"
+            style={{
+              y: smoothHeroY,
+              x: smoothHeroX,
               scale: smoothHeroScale,
               translateX: smoothHeroTranslateX,
-              opacity: smoothHeroOpacity 
+              opacity: smoothHeroOpacity
             }}
           >
             <canvas ref={canvasRef} className="cursor-canvas" />
