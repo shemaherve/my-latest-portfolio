@@ -223,31 +223,30 @@ function CursorExperience() {
     target: shellRef,
     offset: ["start start", "end start"],
   });
-  const heroY = useTransform(scrollYProgress, [0, 0.5, 1], [0, 380, 380]);
-  // On scroll (2 scrolls), text moves right and hero image expands left
-  // Hero: moves to left side when scrolling - increased movement
-  const heroX = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, -250, -400]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2, 0.4], [1, 1.1, 1.2]);
-  const heroTranslateX = useTransform(scrollYProgress, [0, 0.2, 0.4], ["0%", "-20%", "-35%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0, 0.5, 1], [320, 50, 0]);
-  const aboutOpacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
-  // Text moves to right side on scroll and fades out
-  const leftNameX = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, 200, 300]);
-  const leftNameY = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, -10, -20]);
-  const leftNameOpacity = useTransform(scrollYProgress, [0, 0.25, 0.5], [1, 0.5, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 0]); // Fixed - no vertical movement
+  const heroX = useTransform(scrollYProgress, [0, 0.8], [0, -496]); // Move LEFT 2cm (76px more)
+  const heroScale = useTransform(scrollYProgress, [0, 0.8], [1, 1.18]);
+  const heroTranslateX = useTransform(scrollYProgress, [0, 0.8], ["0%", "-18%"]); // Move LEFT
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6, 0.8], [1, 1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0, 0.5], [220, 0]);
+  const aboutOpacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [0, 1, 1]);
+  // Text moves to RIGHT side (positive X) - finishes when about section settles
+  const leftNameX = useTransform(scrollYProgress, [0, 0.10], [0, 900]); // Move RIGHT (positive)
+  const leftNameY = useTransform(scrollYProgress, [0, 0.10], [0, -35]);
+  const leftNameOpacity = useTransform(scrollYProgress, [0, 0.3, 0.9], [1, 0.4, 0]);
   // hide intro as soon as the user starts scrolling
-  const introOpacity = useTransform(scrollYProgress, [0, 0.02, 0.05, 1], [1, 0, 0, 0]);
-  // Smooth the transforms with springs to approximate a 2s shift feel
-  const smoothHeroX = useSpring(heroX, { stiffness: 40, damping: 14 });
-  const smoothHeroY = useSpring(heroY, { stiffness: 40, damping: 14 });
-  const smoothHeroOpacity = useSpring(heroOpacity, { stiffness: 50, damping: 16 });
-  const smoothLeftNameOpacity = useSpring(leftNameOpacity, { stiffness: 60, damping: 18 });
-  const smoothLeftNameX = useSpring(leftNameX, { stiffness: 50, damping: 18 });
-  const smoothLeftNameY = useSpring(leftNameY, { stiffness: 50, damping: 18 });
-  const smoothHeroScale = useSpring(heroScale, { stiffness: 40, damping: 16 });
-  const smoothHeroTranslateX = useSpring(heroTranslateX, { stiffness: 40, damping: 16 });
-  const smoothIntroOpacity = useSpring(introOpacity, { stiffness: 60, damping: 18 });
+  const introOpacity = useTransform(scrollYProgress, [0, 0.02, 0.05], [1, 0, 0]);
+  // Smooth the transforms with identical springs for perfect synchronization
+  const springConfig = { stiffness: 60, damping: 18 };
+  const smoothHeroX = useSpring(heroX, springConfig);
+  const smoothHeroY = useSpring(heroY, springConfig);
+  const smoothHeroOpacity = useSpring(heroOpacity, springConfig);
+  const smoothLeftNameOpacity = useSpring(leftNameOpacity, springConfig);
+  const smoothLeftNameX = useSpring(leftNameX, springConfig);
+  const smoothLeftNameY = useSpring(leftNameY, springConfig);
+  const smoothHeroScale = useSpring(heroScale, springConfig);
+  const smoothHeroTranslateX = useSpring(heroTranslateX, springConfig);
+  const smoothIntroOpacity = useSpring(introOpacity, springConfig);
 
   // Mouse progress - INCREASED SPEED (higher stiffness, lower damping)
   const mouseX = useMotionValue(0);
@@ -433,12 +432,19 @@ function CursorExperience() {
         className="about-section-min"
         style={{ y: aboutY, opacity: aboutOpacity }}
       >
-        <div className="about-heading-block">
-          <p className="about-kicker">ABOUT US</p>
-          <h2>ABOUT ME</h2>
-        </div>
-        <div className="about-copy-block">
-          <p>{portfolio.owner.summary}</p>
+        <div className="about-left"></div>
+        <div className="about-right">
+          <div className="about-heading-block">
+            <p className="about-kicker">ABOUT US</p>
+            <h2>ABOUT ME</h2>
+          </div>
+          <div className="about-copy-block">
+            <p>Full Stack Software Developer passionate about creating exceptional user experiences. I build robust, scalable applications from database to UI, but truly shine in Frontend development where I craft intuitive interfaces and seamless interactions.</p>
+            <br />
+            <p>Software Developer with expertise in building modern web applications. I specialize in creating responsive, performant user interfaces and solving complex technical challenges with clean, maintainable code.</p>
+            <br />
+            <p>Full Stack Developer focused on delivering high-quality software solutions. I combine technical excellence with creative problem-solving to build applications that users love and businesses rely on.</p>
+          </div>
         </div>
       </motion.section>
     </div>

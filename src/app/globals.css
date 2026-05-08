@@ -275,31 +275,49 @@
 }
 
 .about-section-min {
-  position: relative;
+  position: sticky;
   z-index: 25;
   width: 100%;
-  min-height: 100vh;
-  /* left side transparent to reveal hero image, right side solid black */
-  background: linear-gradient(90deg, transparent 0%, transparent 48%, #000 48%, #000 100%);
+  min-height: calc(50vh + 8cm);
+  background: linear-gradient(90deg, transparent 0%, transparent 50%, #000 50%, #000 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
   display: grid;
-  grid-template-columns: 1fr minmax(420px, 720px);
-  gap: 3rem;
-  align-items: start;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: center;
+  justify-items: center;
   max-width: none;
-  margin: 100vh 0 0;
-  padding: 10vh 6rem 6rem;
+  margin: 0;
+  padding: 4vh 0 2rem;
   border-radius: 0;
+  top: 0;
+}
+
+.about-left {
+  grid-column: 1;
+  background: transparent;
+  height: 100%;
+}
+
+.about-right {
+  grid-column: 2;
+  background: #000;
+  padding: 0 4rem;
+  height: 100%;
 }
 
 .about-heading-block {
   position: relative;
+  text-align: left;
+  width: 100%;
+  max-width: 720px;
 }
 
-.about-heading-block,
 .about-copy-block {
-  grid-column: 2;
+  text-align: left;
+  width: 100%;
+  max-width: 720px;
 }
 
 .about-kicker {
@@ -372,9 +390,8 @@
   background: transparent;
   z-index: 100;
   cursor: pointer;
-  border-radius: 50%;
+  gap: 1.25rem;
   align-items: center;
-  justify-content: center;
 }
 
 .hamburger-lines {
@@ -385,6 +402,14 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.about-heading-block {
+  margin-bottom: 0.5rem;
+}
+
+.about-copy-block {
+  margin-top: 0;
 }
 
 .hamburger-2026 .line {
@@ -426,10 +451,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  padding: 6rem 2.5rem 3rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  align-items: center;
+  padding: 2rem;
 }
 
 .menu-bg-grid {
@@ -607,27 +630,21 @@
   padding: 0.25rem 0;
 }
 
-@media (max-width: 1024px) {
-  .hamburger-2026 {
-    display: flex;
-  }
+.header-right {
+  display: none;
+}
 
-  .hamburger-btn {
-    display: none;
-  }
-
-  .header-right {
-    display: none;
-  }
-
-  .header-center {
-    display: none;
-  }
+.header-center {
+  display: none;
 }
 
 @media (max-width: 640px) {
   .hero-shell {
-    min-height: 210vh;
+    min-height: 220vh;
+  }
+
+  .mobile-menu-2026 {
+    width: 100%;
   }
 
   .about-section-min {
