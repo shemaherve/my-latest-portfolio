@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { motion, useScroll, useSpring, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useScroll, useSpring, useMotionValue, useTransform, AnimatePresence, useMotionTemplate } from "framer-motion";
 import { portfolio } from "@/data/portfolio";
 
 // Frame 5 (rigt (5).png) is dismissed, so we have 9 frames.
@@ -16,12 +16,37 @@ function getFramePath(index: number): string {
   return `/frames_no_bg/frame_${actualFileNumber}.png`;
 }
 
-/* ──────────────────────── Header ──────────────────────── */
+/* ──────────────────────── Header with Modern 2026 Hamburger ──────────────────────── */
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    setMousePos({ x: x * 0.3, y: y * 0.3 });
+  };
+
+  const navItems = [
+    { id: "about", label: "ABOUT", number: "01" },
+    { id: "work", label: "WORK", number: "02" },
+    { id: "contact", label: "CONTACT", number: "03" },
+  ];
+
   return (
     <header className="site-header-new">
       <div className="header-left">
-        <a href="/" className="logo">&lt;shemadevro/&gt;</a>
+        <motion.a 
+          href="/" 
+          className="logo"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >&lt;shemadevro/&gt;</motion.a>
       </div>
       <div className="header-center">{portfolio.owner.email}</div>
       <nav className="header-right">
@@ -31,7 +56,135 @@ function Header() {
           <li><a href="#contact">CONTACT</a></li>
         </ul>
       </nav>
+
+      {/* Modern 2026 Magnetic Hamburger */}
+      <motion.button
+        ref={buttonRef}
+        className={`hamburger-2026 ${menuOpen ? "open" : ""}`}
+        aria-label="Toggle menu"
+        onClick={() => setMenuOpen((s) => !s)}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => {
+          setIsHovering(false);
+          setMousePos({ x: 0, y: 0 });
+        }}
+        animate={{
+          x: isHovering ? mousePos.x : 0,
+          y: isHovering ? mousePos.y : 0,
+        }}
+        transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      >
+        <div className="hamburger-lines">
+          <motion.span 
+            className="line line-1"
+            animate={{
+              rotate: menuOpen ? 45 : 0,
+              y: menuOpen ? 8 : 0,
+              width: menuOpen ? 32 : 28,
+            }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          />
+          <motion.span 
+            className="line line-2"
+            animate={{
+              opacity: menuOpen ? 0 : 1,
+              x: menuOpen ? -10 : 0,
+            }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          />
+          <motion.span 
+            className="line line-3"
+            animate={{
+              rotate: menuOpen ? -45 : 0,
+              y: menuOpen ? -8 : 0,
+              width: menuOpen ? 32 : 20,
+            }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          />
+        </div>
+        <motion.div 
+          className="hamburger-glow"
+          animate={{
+            opacity: isHovering ? 1 : 0,
+            scale: isHovering ? 1.2 : 1,
+          }}
+          transition={{ duration: 0.3 }}
+        />
+      </motion.button>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.nav
+            className="mobile-menu-2026"
+            initial={{ clipPath: "circle(0% at calc(100% - 3rem) 2.25rem)" }}
+            animate={{ clipPath: "circle(150% at calc(100% - 3rem) 2.25rem)" }}
+            exit={{ clipPath: "circle(0% at calc(100% - 3rem) 2.25rem)" }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          >
+            <div className="menu-bg-grid" />
+            <ul className="menu-items-2026">
+              {navItems.map((item, index) => (
+                <motion.li
+                  key={item.id}
+                  initial={{ opacity: 0, x: 60 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ 
+                    duration: 0.4, 
+                    delay: index * 0.1,
+                    ease: [0.4, 0, 0.2, 1]
+                  }}
+                  onMouseEnter={() => setHoveredItem(item.id)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                >
+                  <a 
+                    href={`#${item.id}`} 
+                    onClick={() => setMenuOpen(false)}
+                    className={hoveredItem === item.id ? "active" : ""}
+                  >
+                    <span className="menu-number">{item.number}</span>
+                    <span className="menu-label">{item.label}</span>
+                    <motion.div 
+                      className="menu-arrow"
+                      animate={{
+                        x: hoveredItem === item.id ? 0 : -20,
+                        opacity: hoveredItem === item.id ? 1 : 0,
+                      }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <ArrowRightIcon />
+                    </motion.div>
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+            <motion.div 
+              className="menu-footer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <p>© 2026 shemadevro</p>
+              <div className="menu-socials">
+                <a href="#"><GitHubIcon /></a>
+                <a href="#"><LinkedInIcon /></a>
+                <a href="#"><XIcon /></a>
+              </div>
+            </motion.div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
+  );
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
   );
 }
 
@@ -71,12 +224,18 @@ function CursorExperience() {
     offset: ["start start", "end start"],
   });
   const heroY = useTransform(scrollYProgress, [0, 0.5, 1], [0, 380, 380]);
-  // shift right more noticeably by halfway (200px), then continue to ~400px at end
-  const heroX = useTransform(scrollYProgress, [0, 0.5, 1], [0, 200, 400]);
+  // On scroll (2 scrolls), text moves right and hero image expands left
+  // Hero: moves to left side when scrolling - increased movement
+  const heroX = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, -250, -400]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2, 0.4], [1, 1.1, 1.2]);
+  const heroTranslateX = useTransform(scrollYProgress, [0, 0.2, 0.4], ["0%", "-20%", "-35%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0, 1], [320, 0]);
+  const aboutY = useTransform(scrollYProgress, [0, 0.5, 1], [320, 50, 0]);
   const aboutOpacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
-  const leftNameOpacity = useTransform(scrollYProgress, [0, 0.45, 0.5, 1], [1, 1, 0, 0]);
+  // Text moves to right side on scroll and fades out
+  const leftNameX = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, 200, 300]);
+  const leftNameY = useTransform(scrollYProgress, [0, 0.2, 0.4], [0, -10, -20]);
+  const leftNameOpacity = useTransform(scrollYProgress, [0, 0.25, 0.5], [1, 0.5, 0]);
   // hide intro as soon as the user starts scrolling
   const introOpacity = useTransform(scrollYProgress, [0, 0.02, 0.05, 1], [1, 0, 0, 0]);
   // Smooth the transforms with springs to approximate a 2s shift feel
@@ -84,6 +243,10 @@ function CursorExperience() {
   const smoothHeroY = useSpring(heroY, { stiffness: 40, damping: 14 });
   const smoothHeroOpacity = useSpring(heroOpacity, { stiffness: 50, damping: 16 });
   const smoothLeftNameOpacity = useSpring(leftNameOpacity, { stiffness: 60, damping: 18 });
+  const smoothLeftNameX = useSpring(leftNameX, { stiffness: 50, damping: 18 });
+  const smoothLeftNameY = useSpring(leftNameY, { stiffness: 50, damping: 18 });
+  const smoothHeroScale = useSpring(heroScale, { stiffness: 40, damping: 16 });
+  const smoothHeroTranslateX = useSpring(heroTranslateX, { stiffness: 40, damping: 16 });
   const smoothIntroOpacity = useSpring(introOpacity, { stiffness: 60, damping: 18 });
 
   // Mouse progress - INCREASED SPEED (higher stiffness, lower damping)
@@ -217,13 +380,28 @@ function CursorExperience() {
 
         <div className="hero-grid">
           {/* Left Text - Decreased size and pulled right */}
-          <div className="hero-left-text pulled-right">
+          <motion.div 
+            className="hero-left-text pulled-right"
+            style={{ 
+              x: smoothLeftNameX,
+              y: smoothLeftNameY,
+            }}
+          >
             <motion.p className="intro-text" style={{ opacity: smoothIntroOpacity }}>Hello! I&apos;m</motion.p>
             <AnimatedName name="Dusabe shema" style={{ opacity: smoothLeftNameOpacity }} />
             <AnimatedName name="Herve" className="hero-last-name" style={{ opacity: smoothLeftNameOpacity }} />
-          </div>
+          </motion.div>
 
-          <motion.div className="hero-center-canvas" style={{ y: smoothHeroY, x: smoothHeroX, opacity: smoothHeroOpacity }}>
+          <motion.div 
+            className="hero-center-canvas" 
+            style={{ 
+              y: smoothHeroY, 
+              x: smoothHeroX, 
+              scale: smoothHeroScale,
+              translateX: smoothHeroTranslateX,
+              opacity: smoothHeroOpacity 
+            }}
+          >
             <canvas ref={canvasRef} className="cursor-canvas" />
             {!imagesLoaded && (
               <div className="canvas-loader-simple">
@@ -273,6 +451,8 @@ function LinkedInIcon() { return <svg width="20" height="20" viewBox="0 0 24 24"
 function XIcon() { return <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>; }
 function InstagramIcon() { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>; }
 function ResumeIcon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>; }
+
+function ArrowRightIconSmall() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>; }
 
 /* ──────────────────── Main Page ───────────────────────── */
 export default function Home() {
