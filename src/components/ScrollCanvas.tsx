@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScroll, useMotionValueEvent } from "framer-motion";
 
 const TOTAL_FRAMES = 10;
@@ -22,29 +22,7 @@ export default function ScrollCanvas() {
     offset: ["start start", "end end"],
   });
 
-  // Preload all images
-  useEffect(() => {
-    let loadedCount = 0;
-    const images: HTMLImageElement[] = [];
-
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
-      img.src = getFramePath(i);
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === TOTAL_FRAMES) {
-          imagesRef.current = images;
-          setImagesLoaded(true);
-          // Draw first frame
-          drawFrame(0);
-        }
-      };
-      images.push(img);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const drawFrame = useCallback((frameIndex: number) => {
+  const drawFrame = (frameIndex: number) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     const img = imagesRef.current[frameIndex];
@@ -78,6 +56,27 @@ export default function ScrollCanvas() {
     }
 
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  };
+
+  // Preload all images
+  useEffect(() => {
+    let loadedCount = 0;
+    const images: HTMLImageElement[] = [];
+
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      const img = new Image();
+      img.src = getFramePath(i);
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === TOTAL_FRAMES) {
+          imagesRef.current = images;
+          setImagesLoaded(true);
+          // Draw first frame
+          drawFrame(0);
+        }
+      };
+      images.push(img);
+    }
   }, []);
 
   // Listen to scroll
@@ -105,7 +104,7 @@ export default function ScrollCanvas() {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [imagesLoaded, drawFrame]);
+  }, [imagesLoaded]);
 
   return (
     <div ref={containerRef} className="scroll-container">

@@ -1,9 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useScroll, useSpring, useMotionValue, useTransform, AnimatePresence, useMotionTemplate } from "framer-motion";
-import { portfolio } from "@/data/portfolio";
+import { motion, useScroll, useSpring, useMotionValue, useTransform, AnimatePresence, type MotionStyle } from "framer-motion";
+import StickyScrollCanvas from "@/components/StickyScrollCanvas";
+import CareerTimelineSection from "@/components/CareerTimelineSection";
+import WorkShowcaseSection from "@/components/WorkShowcaseSection";
+import TechStackSection from "@/components/TechStackSection";
+import CertificatesSection from "@/components/CertificatesSection";
 
 // Frame 5 (rigt (5).png) is dismissed, so we have 9 frames.
 // Indices: 0, 1, 2, 3, 5, 6, 7, 8, 9 (skipping 4)
@@ -34,8 +37,9 @@ function Header() {
 
   const navItems = [
     { id: "about", label: "ABOUT", number: "01" },
-    { id: "work", label: "WORK", number: "02" },
-    { id: "contact", label: "CONTACT", number: "03" },
+    { id: "experience", label: "EXPERIENCE", number: "02" },
+    { id: "work", label: "WORK", number: "03" },
+    { id: "contact", label: "CONTACT", number: "04" },
   ];
 
   return (
@@ -48,10 +52,11 @@ function Header() {
           whileTap={{ scale: 0.98 }}
         >&lt;shemadevro/&gt;</motion.a>
       </div>
-      <div className="header-center">{portfolio.owner.email}</div>
+      <div className="header-center">hello@shemadevro.dev</div>
       <nav className="header-right">
         <ul className="nav-links">
           <li><a href="#about">ABOUT</a></li>
+          <li><a href="#experience">EXPERIENCE</a></li>
           <li><a href="#work">WORK</a></li>
           <li><a href="#contact">CONTACT</a></li>
         </ul>
@@ -189,7 +194,7 @@ function ArrowRightIcon() {
 }
 
 /* ──────────────────── Typing Animation ────────────────── */
-function AnimatedName({ name, className, style }: { name: string; className?: string; style?: any }) {
+function AnimatedName({ name, className, style }: { name: string; className?: string; style?: MotionStyle }) {
   const letters = name.split("");
   return (
     <motion.h1 className={`hero-name-new smaller-name ${className ?? ""}`} style={style}>
@@ -447,6 +452,7 @@ function CursorExperience() {
           </div>
         </div>
       </motion.section>
+      <StickyScrollCanvas />
     </div>
   );
 }
@@ -458,27 +464,16 @@ function XIcon() { return <svg width="20" height="20" viewBox="0 0 24 24" fill="
 function InstagramIcon() { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>; }
 function ResumeIcon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>; }
 
-function ArrowRightIconSmall() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>; }
-
 /* ──────────────────── Main Page ───────────────────────── */
 export default function Home() {
   return (
     <main className="portfolio-v2">
       <Header />
       <CursorExperience />
-      <div className="post-scroll-spacer">
-        <section id="work" className="content-section-min">
-          <h2>WORK</h2>
-          <div className="projects-grid-min">
-            {portfolio.projects.map((project) => (
-              <article key={project.name} className="project-card-min">
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
+      <CareerTimelineSection />
+      <WorkShowcaseSection />
+      <TechStackSection />
+      <CertificatesSection />
     </main>
   );
 }
