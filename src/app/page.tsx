@@ -7,6 +7,7 @@ import CareerTimelineSection from "@/components/CareerTimelineSection";
 import WorkShowcaseSection from "@/components/WorkShowcaseSection";
 import TechStackSection from "@/components/TechStackSection";
 import CertificatesSection from "@/components/CertificatesSection";
+import ContactSection from "@/components/ContactSection";
 
 // Frame 5 (rigt (5).png) is dismissed, so we have 9 frames.
 // Indices: 0, 1, 2, 3, 5, 6, 7, 8, 9 (skipping 4)
@@ -229,18 +230,21 @@ function CursorExperience() {
     offset: ["start start", "end start"],
   });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 0]); // Fixed - no vertical movement
-  const heroX = useTransform(scrollYProgress, [0, 0.8], [0, -496]); // Move LEFT 2cm (76px more)
-  const heroScale = useTransform(scrollYProgress, [0, 0.8], [1, 1.18]);
-  const heroTranslateX = useTransform(scrollYProgress, [0, 0.8], ["0%", "-18%"]); // Move LEFT
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6, 0.8], [1, 1, 0]);
-  const aboutY = useTransform(scrollYProgress, [0, 0.5], [220, 0]);
-  const aboutOpacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [0, 1, 1]);
-  // Text moves to RIGHT side (positive X) - finishes when about section settles
-  const leftNameX = useTransform(scrollYProgress, [0, 0.10], [0, 900]); // Move RIGHT (positive)
-  const leftNameY = useTransform(scrollYProgress, [0, 0.10], [0, -35]);
-  const leftNameOpacity = useTransform(scrollYProgress, [0, 0.3, 0.9], [1, 0.4, 0]);
+  const heroX = useTransform(scrollYProgress, [0.2, 0.55], [0, -496]); // Move LEFT
+  const heroScale = useTransform(scrollYProgress, [0.2, 0.55], [1, 1.18]);
+  const heroTranslateX = useTransform(scrollYProgress, [0.2, 0.55], ["0%", "-18%"]); // Move LEFT
+  const heroOpacity = useTransform(scrollYProgress, [0.65, 0.85], [1, 0]);
+  const aboutY = useTransform(scrollYProgress, [0.35, 0.6], [320, 0]);
+  const aboutOpacity = useTransform(scrollYProgress, [0.35, 0.45, 0.6], [0, 0, 1]);
+  // Text moves slightly left and fades out quickly to prevent overlap with the content
+  const leftNameX = useTransform(scrollYProgress, [0.2, 0.35], [0, -120]); // Move LEFT
+  const leftNameY = useTransform(scrollYProgress, [0.2, 0.35], [0, 0]);
+  const leftNameOpacity = useTransform(scrollYProgress, [0.2, 0.32, 0.35], [1, 0.8, 0]);
+  // Role text moves slightly right and fades out quickly to prevent overlap
+  const rightRoleX = useTransform(scrollYProgress, [0.2, 0.35], [0, 120]); // Move RIGHT
+  const rightRoleOpacity = useTransform(scrollYProgress, [0.2, 0.32, 0.35], [1, 0.8, 0]);
   // hide intro as soon as the user starts scrolling
-  const introOpacity = useTransform(scrollYProgress, [0, 0.02, 0.05], [1, 0, 0]);
+  const introOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
   // Smooth the transforms with identical springs for perfect synchronization
   const springConfig = { stiffness: 60, damping: 18 };
   const smoothHeroX = useSpring(heroX, springConfig);
@@ -249,6 +253,8 @@ function CursorExperience() {
   const smoothLeftNameOpacity = useSpring(leftNameOpacity, springConfig);
   const smoothLeftNameX = useSpring(leftNameX, springConfig);
   const smoothLeftNameY = useSpring(leftNameY, springConfig);
+  const smoothRightRoleX = useSpring(rightRoleX, springConfig);
+  const smoothRightRoleOpacity = useSpring(rightRoleOpacity, springConfig);
   const smoothHeroScale = useSpring(heroScale, springConfig);
   const smoothHeroTranslateX = useSpring(heroTranslateX, springConfig);
   const smoothIntroOpacity = useSpring(introOpacity, springConfig);
@@ -420,6 +426,10 @@ function CursorExperience() {
             initial={{ x: 160, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+            style={{
+              x: smoothRightRoleX,
+              opacity: smoothRightRoleOpacity,
+            }}
           >
             <p className="role-prefix">An</p>
             <h2 className="hero-role-new">FULL STACK<br />DEVELOPER</h2>
@@ -474,6 +484,7 @@ export default function Home() {
       <WorkShowcaseSection />
       <TechStackSection />
       <CertificatesSection />
+      <ContactSection />
     </main>
   );
 }

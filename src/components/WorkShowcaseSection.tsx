@@ -22,6 +22,7 @@ type WorkProject = {
   stack: string;
   image: StaticImageData;
   summary: string;
+  visitUrl?: string;
 };
 
 const PROJECTS: WorkProject[] = [
@@ -42,6 +43,7 @@ const PROJECTS: WorkProject[] = [
     stack: "React, Framer Motion, Responsive UI",
     image: artiImage,
     summary: "A portfolio website for artists to present projects, identity, and visual storytelling.",
+    visitUrl: "https://fredpotfolio.vercel.app/",
   },
   {
     id: "ben-church",
@@ -51,6 +53,7 @@ const PROJECTS: WorkProject[] = [
     stack: "Next.js, CMS-ready content, SEO",
     image: benmImage,
     summary: "The public website for Big Evangelical Network Ministry Church and community communication.",
+    visitUrl: "http://bigevangelicalnetwork.org/",
   },
   {
     id: "kata-ai",
@@ -69,6 +72,7 @@ const PROJECTS: WorkProject[] = [
     stack: "Dashboard UX, role-based data views",
     image: schImage,
     summary: "A student dashboard for Gihanga E-learning that supports online learning and progress tracking.",
+    visitUrl: "http://tsmskills.vercel.app/",
   },
   {
     id: "bobo250-shop-admin",
@@ -78,6 +82,7 @@ const PROJECTS: WorkProject[] = [
     stack: "Admin tools, product flow, orders",
     image: boboAdminImage,
     summary: "An e-commerce administration system that helps people manage products and online buying flow.",
+    visitUrl: "http://bobo250.vercel.app/",
   },
   {
     id: "bobo250-panel",
@@ -96,6 +101,7 @@ const PROJECTS: WorkProject[] = [
     stack: "Content control, announcements, user roles",
     image: bennnImage,
     summary: "An administration dashboard for Big Evangelical Network Ministry to manage content and updates.",
+    visitUrl: "https://www.bigevangelicalnetwork.org/admin",
   },
   {
     id: "smartride-rwanda",
@@ -180,6 +186,19 @@ export default function WorkShowcaseSection() {
                 </div>
 
                 <p className="work-summary">{project.summary}</p>
+
+                {project.visitUrl && (
+                  <div className="work-visit-container">
+                    <a
+                      href={project.visitUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="work-visit-btn"
+                    >
+                      Visit Project <span className="visit-arrow">↗</span>
+                    </a>
+                  </div>
+                )}
               </article>
             ))}
           </motion.div>
@@ -216,6 +235,18 @@ export default function WorkShowcaseSection() {
             <div className="work-popup-copy">
               <h3>{selectedProject.title}</h3>
               <p>{selectedProject.summary}</p>
+              {selectedProject.visitUrl && (
+                <div className="work-popup-visit-container">
+                  <a
+                    href={selectedProject.visitUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="work-visit-btn"
+                  >
+                    Visit Website <span className="visit-arrow">↗</span>
+                  </a>
+                </div>
+              )}
             </div>
           </article>
         </div>
